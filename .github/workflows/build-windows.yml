@@ -36,5 +36,5 @@ jobs:
                 tagName: v__VERSION__
                 releaseName: "Serial Viewer v__VERSION__"
                 releaseBody: "Windows release"
-                releaseDraft: false
+                releaseDraft: true 
                 prerelease: false
