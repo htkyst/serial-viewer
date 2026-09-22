@@ -19,7 +19,7 @@ jobs:
                 node-version: '24'
                 cache: npm
 
-            - name: Install fronted dependencies
+            - name: Clean install frontend dependencies
               run: npm ci 
 
             - name: Setup Rust
@@ -31,9 +31,7 @@ jobs:
             - name: Create ZIP
               shell: pwsh
               run: |
-                mkdir package
-                copy src-tauri\target\release\serial-viewer.exe package\serial-viewer.exe
-                Compress-Archive -Path package\* -DestinationPath serial-viewer.zip
+                Compress-Archive -Path src-tauri\target\release\*.exe -DestinationPath serial-viewer-windows-x86_64.zip
             
             - name: Upload ZIP
               uses: actions/upload-artifact@v4
