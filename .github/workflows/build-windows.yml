@@ -1,12 +1,12 @@
-name: Build Windows
+name: Release Windows
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    tags:
+      - "v*"
 
 jobs:
-    build:
+    release:
         runs-on: windows-latest
 
         steps:
@@ -16,25 +16,22 @@ jobs:
             - name: Setup Node.js
               uses: actions/setup-node@v4
               with:
-                node-version: '24'
+                node-version: 24
                 cache: npm
 
-            - name: Clean install frontend dependencies
+            - name: Clean install dependencies
               run: npm ci 
 
             - name: Setup Rust
               uses: dtolnay/rust-toolchain@stable
             
-            - name: Build
-              run: npm run tauri build
-
-            - name: Create ZIP
-              shell: pwsh
-              run: |
-                Compress-Archive -Path src-tauri\target\release\*.exe -DestinationPath serial-viewer-windows-x86_64.zip
-            
-            - name: Upload ZIP
-              uses: actions/upload-artifact@v4
+            - name: Build and release app
+              uses: tauri-apps/tauri-action@v1
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
               with:
-                name: serial-viewer-windows-x86_64
-                path: serial-viewer-windows-x86_64.zip
+                tagName: v__VERSION__
+                releaseName: "Serial Viewer v__VERSION__"
+                releaseBody: "Windows release"
+                releaseDraft: false
+                prerelease: false
